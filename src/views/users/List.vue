@@ -132,7 +132,7 @@ import { getEncodeId } from '@/utils/coders'
 import CardTitle from '@/components/CardTitle.vue'
 
 // Constantes fijas
-const routeName = 'users'
+const routeName = 'user'
 
 // Estado y referencias
 const alert = inject('alert')
@@ -157,7 +157,7 @@ const getItems = async () => {
   items.value = []
 
   try {
-    const endpoint = `${URL_API}/system/${routeName}?active=${active.value}&filter=${filter.value}`
+    const endpoint = `${URL_API}/${routeName}?active=${active.value}&filter=${filter.value}`
     const response = await axios.get(endpoint, getHdrs(store.getAuth?.token))
     items.value = getRsp(response).data.items
   } catch (err) {
@@ -171,10 +171,10 @@ const getItems = async () => {
 onMounted(() => {
   headers.value = [
     { title: '#', key: 'key', filterable: false, sortable: false, width: 60 },
-    { title: 'Nombre', key: 'full_name' },
+    { title: 'Nombre', key: 'name' },
     { title: 'E-mail', key: 'email' },
-    { title: 'Rol', key: 'role.name' },
-    { title: 'ID', key: 'uiid' },
+    { title: 'Rol', key: 'role.role_id' },
+    // { title: 'ID', key: 'uiid' },
     { title: 'Verif.', key: 'email_verified_at' },
     { title: '', key: 'action', filterable: false, sortable: false, width: 60 },
   ]

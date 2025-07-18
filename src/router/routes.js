@@ -6,7 +6,7 @@ const routes = [
   //users
   {
     path: '/usuarios',
-    name: 'users',
+    name: 'user',
     component: () => import('@/views/users/List.vue'),
     meta: {
       title: 'Usuarios',
@@ -16,7 +16,7 @@ const routes = [
   },
   {
     path: '/usuarios/agregar',
-    name: 'users/store',
+    name: 'user/store',
     component: () => import('@/views/users/Form.vue'),
     meta: {
       title: 'Usuario | Agregar',
@@ -26,7 +26,7 @@ const routes = [
   },
   {
     path: '/usuarios/:id',
-    name: 'users/show',
+    name: 'user/show',
     component: () => import('@/views/users/Show.vue'),
     props: true,
     meta: {
@@ -37,7 +37,7 @@ const routes = [
   },
   {
     path: '/usuarios/:id/editar',
-    name: 'users/update',
+    name: 'user/update',
     component: () => import('@/views/users/Form.vue'),
     props: true,
     meta: {

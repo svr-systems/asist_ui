@@ -197,7 +197,7 @@ import CardTitle from '@/components/CardTitle.vue'
 import BtnDwd from '@/components/BtnDwd.vue'
 
 // Constantes fijas
-const routeName = 'users'
+const routeName = 'user'
 
 // Estado y referencias
 const alert = inject('alert')
@@ -239,7 +239,7 @@ const getItem = async () => {
     isLoading.value = false
   } else {
     try {
-      const endpoint = `${URL_API}/system/${routeName}/${itemId.value}`
+      const endpoint = `${URL_API}/${routeName}/${itemId.value}`
       const response = await axios.get(endpoint, getHdrs(store.getAuth?.token))
       item.value = getRsp(response).data.item
     } catch (err) {
@@ -267,7 +267,7 @@ const handleAction = async () => {
   const payload = getObj(item.value, isStoreMode.value)
 
   try {
-    const endpoint = `${URL_API}/system/${routeName}${!isStoreMode.value ? `/${payload.id}` : ''}`
+    const endpoint = `${URL_API}/${routeName}${!isStoreMode.value ? `/${payload.id}` : ''}`
     const response = getRsp(
       await axios.post(endpoint, getFormData(payload), getHdrs(store.getAuth?.token, true))
     )

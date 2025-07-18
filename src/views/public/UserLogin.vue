@@ -112,7 +112,7 @@ const handleAction = async () => {
   const payload = getObj(item.value, true)
 
   try {
-    const endpoint = `${URL_API}/auth/login`
+    const endpoint = `${URL_API}/login`
     const response = await axios.post(endpoint, payload, getHdrs())
 
     await store.loginAction(getRsp(response).data.auth)
