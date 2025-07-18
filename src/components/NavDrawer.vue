@@ -39,5 +39,7 @@ const drawerModel = computed({
 const drawerItems = [
   { title: 'Inicio', icon: 'mdi-home', link: 'home' },
   { title: 'Usuarios', icon: 'mdi-account', link: 'user' },
+  { title: 'Empresas', icon: 'mdi-domain', link: 'companies' },
+  { title: 'Sucursales', icon: 'mdi-bank', link: 'branches' },
 ]
 </script>

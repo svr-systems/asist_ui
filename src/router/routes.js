@@ -46,6 +46,92 @@ const routes = [
       middleware: Auth,
     },
   },
+  //companies
+  {
+    path: '/empresas',
+    name: 'companies',
+    component: () => import('@/views/companies/List.vue'),
+    meta: {
+      title: 'Empresas',
+      icon: 'mdi-domain',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/empresas/agregar',
+    name: 'companies/store',
+    component: () => import('@/views/companies/Form.vue'),
+    meta: {
+      title: 'Empresa | Agregar',
+      icon: 'mdi-domain',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/empresas/:id',
+    name: 'companies/show',
+    component: () => import('@/views/companies/Show.vue'),
+    props: true,
+    meta: {
+      title: 'Empresa',
+      icon: 'mdi-domain',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/empresas/:id/editar',
+    name: 'companies/update',
+    component: () => import('@/views/companies/Form.vue'),
+    props: true,
+    meta: {
+      title: 'Empresa | Editar',
+      icon: 'mdi-domain',
+      middleware: Auth,
+    },
+  },
+  //branches
+  {
+    path: '/sucursales',
+    name: 'branches',
+    component: () => import('@/views/branches/List.vue'),
+    meta: {
+      title: 'Sucursales',
+      icon: 'mdi-bank',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/sucursales/agregar',
+    name: 'branches/store',
+    component: () => import('@/views/branches/Form.vue'),
+    meta: {
+      title: 'Sucursal | Agregar',
+      icon: 'mdi-bank',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/sucursales/:id',
+    name: 'branches/show',
+    component: () => import('@/views/branches/Show.vue'),
+    props: true,
+    meta: {
+      title: 'Sucursal',
+      icon: 'mdi-bank',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/sucursales/:id/editar',
+    name: 'branches/update',
+    component: () => import('@/views/branches/Form.vue'),
+    props: true,
+    meta: {
+      title: 'Sucursal | Editar',
+      icon: 'mdi-bank',
+      middleware: Auth,
+    },
+  },
   //GENERAL
   {
     path: '/inicio',
