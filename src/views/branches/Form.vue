@@ -44,32 +44,7 @@
                       :rules="rules.textRequired"
                     />
                   </v-col>
-                  <v-col cols="12" md="3">
-                    <v-text-field
-                      label="A. paterno"
-                      v-model="item.surname_p"
-                      type="text"
-                      variant="outlined"
-                      density="compact"
-                      maxlength="25"
-                      counter
-                      :rules="rules.textRequired"
-                    />
-                  </v-col>
-                  <v-col cols="12" md="3">
-                    <v-text-field
-                      label="A. materno*"
-                      v-model="item.surname_m"
-                      type="text"
-                      variant="outlined"
-                      density="compact"
-                      maxlength="25"
-                      counter
-                      :rules="rules.textOptional"
-                    />
-                  </v-col>
                   <v-col cols="12" md="3" class="d-flex align-center" style="gap: 8px">
-                    <!-- File Input -->
                     <v-file-input
                       label="Fotografía*"
                       v-model="item.avatar_doc"
@@ -88,8 +63,6 @@
                         </div>
                       </template>
                     </v-file-input>
-
-                    <!-- Botón de Eliminar (fuera del file-input) -->
                     <v-btn
                       v-if="!isStoreMode && item.avatar && !item.avatar_doc"
                       icon
@@ -98,7 +71,7 @@
                       :color="item.avatar_dlt ? 'error' : 'default'"
                       @click="item.avatar_dlt = !item.avatar_dlt"
                       class="ml-1"
-                      style="margin-top: -20px;"
+                      style="margin-top: -20px"
                     >
                       <v-icon size="small">
                         {{ item.avatar_dlt ? 'mdi-close-circle' : 'mdi-delete' }}
@@ -107,48 +80,6 @@
                         {{ item.avatar_dlt ? 'Revertir eliminación' : 'Eliminar' }}
                       </v-tooltip>
                     </v-btn>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12">
-            <v-card>
-              <v-card-title>
-                <v-row dense>
-                  <v-col cols="11">
-                    <CardTitle text="CUENTA" sub />
-                  </v-col>
-                  <v-col cols="1" class="text-right" />
-                </v-row>
-              </v-card-title>
-              <v-card-text>
-                <v-row dense>
-                  <v-col cols="12" md="3">
-                    <v-text-field
-                      label="E-mail"
-                      v-model="item.email"
-                      type="text"
-                      variant="outlined"
-                      density="compact"
-                      maxlength="65"
-                      counter
-                      :rules="rules.emailRequired"
-                    />
-                  </v-col>
-                  <v-col cols="12" md="3">
-                    <v-select
-                      label="Rol"
-                      v-model="item.role_id"
-                      variant="outlined"
-                      density="compact"
-                      :items="roles"
-                      item-title="name"
-                      item-value="id"
-                      :rules="rules.required"
-                      :loading="rolesLoading"
-                    />
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -186,10 +117,9 @@ import axios from 'axios'
 import { useStore } from '@/store'
 import { URL_API } from '@/utils/config'
 import { getHdrs, getErr, getRsp } from '@/utils/http'
-import { getDecodeId } from '@/utils/coders'
+import { getDecodeId, getEncodeId } from '@/utils/coders'
 import { getRules } from '@/utils/validators'
 import { getObj, getFormData } from '@/utils/helpers'
-import { getUserObj } from '@/utils/objects'
 
 // Componentes
 import BtnBack from '@/components/BtnBack.vue'
@@ -197,7 +127,7 @@ import CardTitle from '@/components/CardTitle.vue'
 import BtnDwd from '@/components/BtnDwd.vue'
 
 // Constantes fijas
-const routeName = 'users'
+const routeName = 'branch'
 
 // Estado y referencias
 const alert = inject('alert')
@@ -208,45 +138,43 @@ const route = useRoute()
 
 // Estado reactivo
 const itemId = ref(route.params.id ? getDecodeId(route.params.id) : null)
+const companyId = ref(getDecodeId(route.params.company_id))
 const isStoreMode = ref(!itemId.value)
 const isLoading = ref(true)
 const formRef = ref(null)
-const item = ref(null)
+const item = ref({
+  name: '',
+  avatar: null,
+  avatar_doc: null,
+  avatar_dlt: false,
+  avatar_b64: null,
+})
 const rules = getRules()
-const roles = ref([])
-const rolesLoading = ref(true)
-
-// Obtener catálogos
-const getCatalogs = async () => {
-  let endpoint = null
-  let response = null
-
-  try {
-    endpoint = `${URL_API}/roles`
-    response = await axios.get(endpoint, getHdrs(store.getAuth?.token))
-    roles.value = getRsp(response).data.items
-  } catch (err) {
-    alert?.show('red-darken-1', getErr(err))
-  } finally {
-    rolesLoading.value = false
-  }
-}
 
 // Obtener datos
 const getItem = async () => {
-  if (isStoreMode.value) {
-    item.value = getUserObj()
-    isLoading.value = false
-  } else {
-    try {
-      const endpoint = `${URL_API}/${routeName}/${itemId.value}`
-      const response = await axios.get(endpoint, getHdrs(store.getAuth?.token))
-      item.value = getRsp(response).data.item
-    } catch (err) {
-      alert?.show('red-darken-1', getErr(err))
-    } finally {
-      isLoading.value = false
+  isLoading.value = true
+  try {
+    const endpoint = `${URL_API}/company/${routeName}/${itemId.value}`
+    const response = await axios.get(endpoint, {
+      params: {
+        id: itemId.value,
+        company_id: companyId.value,
+      },
+      ...getHdrs(store.getAuth?.token),
+    })
+
+    const data = getRsp(response).data.item
+    item.value = {
+      ...data,
+      avatar_doc: null,
+      avatar_dlt: false,
+      avatar_b64: data.avatar,
     }
+  } catch (err) {
+    alert?.show('red-darken-1', getErr(err))
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -264,20 +192,52 @@ const handleAction = async () => {
   if (!confirmed) return
 
   isLoading.value = true
-  const payload = getObj(item.value, isStoreMode.value)
+
+  const payload = {
+    name: item.value.name,
+    company_id: companyId.value,
+  }
+
+  if (!isStoreMode.value) {
+    payload.id = itemId.value
+  }
+
+  const hasFile = item.value.avatar_doc instanceof File
 
   try {
-    const endpoint = `${URL_API}/${routeName}${!isStoreMode.value ? `/${payload.id}` : ''}`
-    const response = getRsp(
-      await axios.post(endpoint, getFormData(payload), getHdrs(store.getAuth?.token, true))
-    )
+    const endpoint = `${URL_API}/company/${routeName}${
+      !isStoreMode.value ? `/${itemId.value}` : ''
+    }`
+
+    let response
+
+    if (hasFile) {
+      const formData = getFormData(payload)
+
+      response = getRsp(
+        await axios[isStoreMode.value ? 'post' : 'put'](
+          endpoint,
+          formData,
+          getHdrs(store.getAuth?.token, true)
+        )
+      )
+    } else {
+      response = getRsp(
+        await axios[isStoreMode.value ? 'post' : 'put'](
+          endpoint,
+          payload,
+          getHdrs(store.getAuth?.token)
+        )
+      )
+    }
 
     alert?.show('success', response.msg)
 
     router.push({
       name: `${routeName}/show`,
       params: {
-        id: btoa(isStoreMode.value ? response.data.item.id : itemId.value),
+        id: getEncodeId(isStoreMode.value ? response.data.item.id : itemId.value),
+        company_id: getEncodeId(companyId.value),
       },
     })
   } catch (err) {
@@ -289,7 +249,10 @@ const handleAction = async () => {
 
 // Inicialización
 onMounted(() => {
-  getCatalogs()
-  getItem()
+  if (!isStoreMode.value) {
+    getItem()
+  } else {
+    isLoading.value = false
+  }
 })
 </script>

@@ -44,32 +44,7 @@
                       :rules="rules.textRequired"
                     />
                   </v-col>
-                  <v-col cols="12" md="3">
-                    <v-text-field
-                      label="A. paterno"
-                      v-model="item.surname_p"
-                      type="text"
-                      variant="outlined"
-                      density="compact"
-                      maxlength="25"
-                      counter
-                      :rules="rules.textRequired"
-                    />
-                  </v-col>
-                  <v-col cols="12" md="3">
-                    <v-text-field
-                      label="A. materno*"
-                      v-model="item.surname_m"
-                      type="text"
-                      variant="outlined"
-                      density="compact"
-                      maxlength="25"
-                      counter
-                      :rules="rules.textOptional"
-                    />
-                  </v-col>
                   <v-col cols="12" md="3" class="d-flex align-center" style="gap: 8px">
-                    <!-- File Input -->
                     <v-file-input
                       label="Fotografía*"
                       v-model="item.avatar_doc"
@@ -88,8 +63,6 @@
                         </div>
                       </template>
                     </v-file-input>
-
-                    <!-- Botón de Eliminar (fuera del file-input) -->
                     <v-btn
                       v-if="!isStoreMode && item.avatar && !item.avatar_doc"
                       icon
@@ -98,7 +71,7 @@
                       :color="item.avatar_dlt ? 'error' : 'default'"
                       @click="item.avatar_dlt = !item.avatar_dlt"
                       class="ml-1"
-                      style="margin-top: -20px;"
+                      style="margin-top: -20px"
                     >
                       <v-icon size="small">
                         {{ item.avatar_dlt ? 'mdi-close-circle' : 'mdi-delete' }}
@@ -107,48 +80,6 @@
                         {{ item.avatar_dlt ? 'Revertir eliminación' : 'Eliminar' }}
                       </v-tooltip>
                     </v-btn>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12">
-            <v-card>
-              <v-card-title>
-                <v-row dense>
-                  <v-col cols="11">
-                    <CardTitle text="CUENTA" sub />
-                  </v-col>
-                  <v-col cols="1" class="text-right" />
-                </v-row>
-              </v-card-title>
-              <v-card-text>
-                <v-row dense>
-                  <v-col cols="12" md="3">
-                    <v-text-field
-                      label="E-mail"
-                      v-model="item.email"
-                      type="text"
-                      variant="outlined"
-                      density="compact"
-                      maxlength="65"
-                      counter
-                      :rules="rules.emailRequired"
-                    />
-                  </v-col>
-                  <v-col cols="12" md="3">
-                    <v-select
-                      label="Rol"
-                      v-model="item.role_id"
-                      variant="outlined"
-                      density="compact"
-                      :items="roles"
-                      item-title="name"
-                      item-value="id"
-                      :rules="rules.required"
-                      :loading="rolesLoading"
-                    />
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -197,7 +128,7 @@ import CardTitle from '@/components/CardTitle.vue'
 import BtnDwd from '@/components/BtnDwd.vue'
 
 // Constantes fijas
-const routeName = 'users'
+const routeName = 'company'
 
 // Estado y referencias
 const alert = inject('alert')

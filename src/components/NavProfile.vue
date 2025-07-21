@@ -25,7 +25,7 @@
       </v-avatar>
 
       <div class="text-subtitle-1 font-weight-medium mb-4">
-        {{ store.auth?.user?.full_name || 'Nombre' }}
+        {{ store.auth?.user?.name || 'Nombre' }}
       </div>
 
       <v-row dense>

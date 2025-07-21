@@ -3,6 +3,11 @@
     <v-card-title>
       <v-row dense>
         <v-col cols="10">
+          <BtnBack
+            :route="{
+              name: 'company',
+            }"
+          />
           <CardTitle :text="route.meta.title" :icon="route.meta.icon" />
         </v-col>
         <v-col cols="2" class="text-right">
@@ -11,7 +16,7 @@
             variant="flat"
             size="x-small"
             color="success"
-            :to="{ name: `${routeName}/store` }"
+            :to="{ name: `${routeName}/store`, params: { company_id: getEncodeId(companyId) } }"
           >
             <v-icon>mdi-plus</v-icon>
             <v-tooltip activator="parent" location="bottom">Agregar</v-tooltip>
@@ -126,13 +131,14 @@ import axios from 'axios'
 import { useStore } from '@/store'
 import { URL_API } from '@/utils/config'
 import { getHdrs, getErr, getRsp } from '@/utils/http'
-import { getEncodeId } from '@/utils/coders'
+import { getDecodeId, getEncodeId } from '@/utils/coders'
 
 // Componentes
 import CardTitle from '@/components/CardTitle.vue'
+import BtnBack from '@/components/BtnBack.vue'
 
 // Constantes fijas
-const routeName = 'users'
+const routeName = 'branch'
 
 // Estado y referencias
 const alert = inject('alert')
@@ -151,14 +157,25 @@ const activeOptions = ref([])
 const filter = ref(0)
 const filterOptions = ref([])
 
+// Obtener el ID de la compañía
+const companyId = ref(getDecodeId(route.params.company_id))
+
 // Cargar registros
 const getItems = async () => {
   isLoading.value = true
   items.value = []
 
   try {
-    const endpoint = `${URL_API}/${routeName}?active=${active.value}&filter=${filter.value}`
-    const response = await axios.get(endpoint, getHdrs(store.getAuth?.token))
+    const endpoint = `${URL_API}/company/${routeName}`
+    const response = await axios.get(endpoint, {
+      params: {
+        active: active.value,
+        filter: filter.value,
+        company_id: companyId.value,
+      },
+      ...getHdrs(store.getAuth?.token),
+    })
+
     items.value = getRsp(response).data.items
   } catch (err) {
     alert?.show('red-darken-1', getErr(err))
@@ -172,10 +189,7 @@ onMounted(() => {
   headers.value = [
     { title: '#', key: 'key', filterable: false, sortable: false, width: 60 },
     { title: 'Nombre', key: 'name' },
-    { title: 'E-mail', key: 'email' },
-    { title: 'Rol', key: 'role.name' },
-    // { title: 'ID', key: 'uiid' },
-    { title: 'Verif.', key: 'email_verified_at' },
+    { title: 'ID', key: 'uiid' },
     { title: '', key: 'action', filterable: false, sortable: false, width: 60 },
   ]
 

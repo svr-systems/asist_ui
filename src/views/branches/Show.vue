@@ -72,36 +72,7 @@
                   <VisVal label="Nombre" :value="item.name" />
                 </v-col>
                 <v-col cols="12" md="3">
-                  <VisVal label="A. paterno" :value="item.surname_p" />
-                </v-col>
-                <v-col cols="12" md="3">
-                  <VisVal label="A. materno" :value="item.surname_m" />
-                </v-col>
-                <v-col cols="12" md="3">
                   <VisDoc label="Fotografía" :value="item.avatar_b64" img />
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12">
-          <v-card>
-            <v-card-title>
-              <v-row dense>
-                <v-col cols="11">
-                  <CardTitle text="CUENTA" sub />
-                </v-col>
-                <v-col cols="1" class="text-right" />
-              </v-row>
-            </v-card-title>
-            <v-card-text>
-              <v-row dense>
-                <v-col cols="12" md="3">
-                  <VisVal label="E-mail" :value="item.email" />
-                </v-col>
-                <v-col cols="12" md="3">
-                  <VisVal label="Rol" :value="item.role?.name" />
                 </v-col>
               </v-row>
             </v-card-text>
@@ -147,7 +118,7 @@ import VisVal from '@/components/VisVal.vue'
 import VisDoc from '@/components/VisDoc.vue'
 
 // Constantes fijas
-const routeName = 'users'
+const routeName = 'branch'
 
 // Estado y referencias
 const alert = inject('alert')
@@ -158,6 +129,7 @@ const route = useRoute()
 
 // Estado reactivo
 const itemId = ref(getDecodeId(route.params.id))
+const companyId = ref(getDecodeId(route.params.company_id))
 const isLoading = ref(true)
 const item = ref(null)
 const regDialog = ref(false)
@@ -166,8 +138,15 @@ const regDialog = ref(false)
 const getItem = async () => {
   isLoading.value = true
   try {
-    const endpoint = `${URL_API}/${routeName}/${itemId.value}`
-    const response = await axios.get(endpoint, getHdrs(store.getAuth?.token))
+    const endpoint = `${URL_API}/company/${routeName}/${itemId.value}`
+    const response = await axios.get(endpoint, {
+      params: {
+        id: itemId.value,
+        company_id: companyId.value,
+      },
+      ...getHdrs(store.getAuth?.token),
+    })
+
     item.value = getRsp(response).data.item
   } catch (err) {
     alert?.show('red-darken-1', getErr(err))
@@ -201,7 +180,7 @@ const restoreItem = async () => {
 
   isLoading.value = true
   try {
-    const endpoint = `${URL_API}/${routeName}/restore`
+    const endpoint = `${URL_API}/system/${routeName}/restore`
     const response = getRsp(
       await axios.post(endpoint, { id: itemId.value }, getHdrs(store.getAuth?.token))
     )

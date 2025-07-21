@@ -101,6 +101,19 @@
                   icon
                   variant="text"
                   size="x-small"
+                  :color="item.active ? 'warning' : 'error'"
+                  :to="{
+                    name: 'branch',
+                    params: { company_id: getEncodeId(item.id) },
+                  }"
+                >
+                  <v-icon>mdi-store</v-icon>
+                  <v-tooltip activator="parent" location="left">Sucursales</v-tooltip>
+                </v-btn>
+                <v-btn
+                  icon
+                  variant="text"
+                  size="x-small"
                   :color="item.active ? '' : 'error'"
                   :to="{ name: `${routeName}/show`, params: { id: getEncodeId(item.id) } }"
                 >
@@ -132,7 +145,7 @@ import { getEncodeId } from '@/utils/coders'
 import CardTitle from '@/components/CardTitle.vue'
 
 // Constantes fijas
-const routeName = 'users'
+const routeName = 'company'
 
 // Estado y referencias
 const alert = inject('alert')
@@ -172,11 +185,7 @@ onMounted(() => {
   headers.value = [
     { title: '#', key: 'key', filterable: false, sortable: false, width: 60 },
     { title: 'Nombre', key: 'name' },
-    { title: 'E-mail', key: 'email' },
-    { title: 'Rol', key: 'role.name' },
-    // { title: 'ID', key: 'uiid' },
-    { title: 'Verif.', key: 'email_verified_at' },
-    { title: '', key: 'action', filterable: false, sortable: false, width: 60 },
+    { title: '', key: 'action', filterable: false, sortable: false, width: 100 },
   ]
 
   activeOptions.value = [
