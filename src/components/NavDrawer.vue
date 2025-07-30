@@ -40,5 +40,6 @@ const drawerItems = [
   { title: 'Inicio', icon: 'mdi-home', link: 'home' },
   { title: 'Empresas', icon: 'mdi-domain', link: 'company' },
   { title: 'Usuarios', icon: 'mdi-account', link: 'users' },
+  { title: 'Asistencias', icon: 'mdi-file-account', link: 'assistance/file' },
 ]
 </script>

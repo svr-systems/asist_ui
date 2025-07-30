@@ -44,43 +44,6 @@
                       :rules="rules.textRequired"
                     />
                   </v-col>
-                  <v-col cols="12" md="3" class="d-flex align-center" style="gap: 8px">
-                    <v-file-input
-                      label="Fotografía*"
-                      v-model="item.avatar_doc"
-                      variant="outlined"
-                      density="compact"
-                      prepend-icon=""
-                      show-size
-                      accept=".jpg,.jpeg,.png"
-                      :rules="rules.imageOptional"
-                      :disabled="item.avatar_dlt"
-                      class="flex-grow-1"
-                    >
-                      <template v-slot:append>
-                        <div v-if="!isStoreMode && item.avatar && !item.avatar_doc" class="d-flex">
-                          <BtnDwd :value="item.avatar_b64" :disabled="item.avatar_dlt" />
-                        </div>
-                      </template>
-                    </v-file-input>
-                    <v-btn
-                      v-if="!isStoreMode && item.avatar && !item.avatar_doc"
-                      icon
-                      variant="text"
-                      size="small"
-                      :color="item.avatar_dlt ? 'error' : 'default'"
-                      @click="item.avatar_dlt = !item.avatar_dlt"
-                      class="ml-1"
-                      style="margin-top: -20px"
-                    >
-                      <v-icon size="small">
-                        {{ item.avatar_dlt ? 'mdi-close-circle' : 'mdi-delete' }}
-                      </v-icon>
-                      <v-tooltip activator="parent" location="bottom">
-                        {{ item.avatar_dlt ? 'Revertir eliminación' : 'Eliminar' }}
-                      </v-tooltip>
-                    </v-btn>
-                  </v-col>
                 </v-row>
               </v-card-text>
             </v-card>
@@ -142,39 +105,37 @@ const companyId = ref(getDecodeId(route.params.company_id))
 const isStoreMode = ref(!itemId.value)
 const isLoading = ref(true)
 const formRef = ref(null)
-const item = ref({
-  name: '',
-  avatar: null,
-  avatar_doc: null,
-  avatar_dlt: false,
-  avatar_b64: null,
-})
+const item = ref(null)
 const rules = getRules()
 
 // Obtener datos
 const getItem = async () => {
-  isLoading.value = true
-  try {
-    const endpoint = `${URL_API}/company/${routeName}/${itemId.value}`
-    const response = await axios.get(endpoint, {
-      params: {
-        id: itemId.value,
-        company_id: companyId.value,
-      },
-      ...getHdrs(store.getAuth?.token),
-    })
-
-    const data = getRsp(response).data.item
+  if (isStoreMode.value) {
     item.value = {
-      ...data,
-      avatar_doc: null,
-      avatar_dlt: false,
-      avatar_b64: data.avatar,
+      id: null,
+      name: null,
     }
-  } catch (err) {
-    alert?.show('red-darken-1', getErr(err))
-  } finally {
     isLoading.value = false
+  } else {
+    isLoading.value = true
+    item.value = []
+
+    try {
+      const endpoint = `${URL_API}/company/${routeName}/${itemId.value}`
+      const response = await axios.get(endpoint, {
+        params: {
+          id: itemId.value,
+          company_id: companyId.value,
+        },
+        ...getHdrs(store.getAuth?.token),
+      })
+
+      item.value = getRsp(response).data.item
+    } catch (err) {
+      alert?.show('red-darken-1', getErr(err))
+    } finally {
+      isLoading.value = false
+    }
   }
 }
 
@@ -194,42 +155,17 @@ const handleAction = async () => {
   isLoading.value = true
 
   const payload = {
+    id: item.value.id,
     name: item.value.name,
     company_id: companyId.value,
   }
-
-  if (!isStoreMode.value) {
-    payload.id = itemId.value
-  }
-
-  const hasFile = item.value.avatar_doc instanceof File
 
   try {
     const endpoint = `${URL_API}/company/${routeName}${
       !isStoreMode.value ? `/${itemId.value}` : ''
     }`
-
-    let response
-
-    if (hasFile) {
-      const formData = getFormData(payload)
-
-      response = getRsp(
-        await axios[isStoreMode.value ? 'post' : 'put'](
-          endpoint,
-          formData,
-          getHdrs(store.getAuth?.token, true)
-        )
-      )
-    } else {
-      response = getRsp(
-        await axios[isStoreMode.value ? 'post' : 'put'](
-          endpoint,
-          payload,
-          getHdrs(store.getAuth?.token)
-        )
-      )
-    }
+    const method = isStoreMode.value ? 'post' : 'put'
+    const response = getRsp(await axios[method](endpoint, payload, getHdrs(store.getAuth?.token)))
 
     alert?.show('success', response.msg)
 
@@ -249,10 +185,6 @@ const handleAction = async () => {
 
 // Inicialización
 onMounted(() => {
-  if (!isStoreMode.value) {
-    getItem()
-  } else {
-    isLoading.value = false
-  }
+  getItem()
 })
 </script>

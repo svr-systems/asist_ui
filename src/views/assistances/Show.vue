@@ -6,32 +6,6 @@
           <BtnBack :route="{ name: routeName }" />
           <CardTitle :text="route.meta.title" :icon="route.meta.icon" />
         </v-col>
-        <v-col v-if="item" cols="2" class="text-right">
-          <div class="d-flex justify-end" style="gap: 10px">
-            <v-btn
-              v-if="item.active"
-              icon
-              variant="flat"
-              size="x-small"
-              color="success"
-              @click="showCredential"
-            >
-              <v-icon>mdi-card-account-details</v-icon>
-              <v-tooltip activator="parent" location="left">Credencial</v-tooltip>
-            </v-btn>
-            <v-btn
-              v-if="item.active"
-              icon
-              variant="flat"
-              size="x-small"
-              color="warning"
-              :to="{ name: `${routeName}/update`, params: { id: getEncodeId(itemId) } }"
-            >
-              <v-icon>mdi-pencil</v-icon>
-              <v-tooltip activator="parent" location="left">Editar</v-tooltip>
-            </v-btn>
-          </div>
-        </v-col>
       </v-row>
     </v-card-title>
 
@@ -82,39 +56,16 @@
             <v-card-text>
               <v-row dense>
                 <v-col cols="12" md="3">
-                  <VisVal label="Nombre" :value="item.name" />
+                  <VisVal label="Nombre completo" :value="item.user.full_name" />
                 </v-col>
                 <v-col cols="12" md="3">
-                  <VisVal label="A. paterno" :value="item.surname_p" />
+                  <VisVal label="Fecha" :value="item.registered_at" />
                 </v-col>
                 <v-col cols="12" md="3">
-                  <VisVal label="A. materno" :value="item.surname_m" />
+                  <VisVal label="ID usuario" :value="item.user_id" />
                 </v-col>
                 <v-col cols="12" md="3">
-                  <VisDoc label="Fotografía" :value="item.avatar_b64" img />
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12">
-          <v-card>
-            <v-card-title>
-              <v-row dense>
-                <v-col cols="11">
-                  <CardTitle text="CUENTA" sub />
-                </v-col>
-                <v-col cols="1" class="text-right" />
-              </v-row>
-            </v-card-title>
-            <v-card-text>
-              <v-row dense>
-                <v-col cols="12" md="3">
-                  <VisVal label="E-mail" :value="item.email" />
-                </v-col>
-                <v-col cols="12" md="3">
-                  <VisVal label="Rol" :value="item.role?.name" />
+                  <VisVal label="ID registro" :value="item.uiid" />
                 </v-col>
               </v-row>
             </v-card-text>
@@ -138,19 +89,6 @@
 
     <DlgReg v-model="regDialog" :item="item" />
   </v-card>
-  <v-dialog v-model="credentialDialog" max-width="500">
-    <v-card>
-      <v-card-title class="d-flex justify-end">
-        <v-btn icon @click="credentialDialog = false" variant="text" size="x-small">
-          <v-icon>mdi-close</v-icon>
-          <v-tooltip activator="parent" location="left">Cerrar</v-tooltip>
-        </v-btn>
-      </v-card-title>
-      <v-card-text>
-        <Credential :base64Image="credentialImage" :label="`CREDENCIAL`" />
-      </v-card-text>
-    </v-card>
-  </v-dialog>
 </template>
 
 <script setup>
@@ -171,10 +109,9 @@ import CardTitle from '@/components/CardTitle.vue'
 import DlgReg from '@/components/DlgReg.vue'
 import VisVal from '@/components/VisVal.vue'
 import VisDoc from '@/components/VisDoc.vue'
-import Credential from '@/components/Credentials.vue'
 
 // Constantes fijas
-const routeName = 'users'
+const routeName = 'assistance'
 
 // Estado y referencias
 const alert = inject('alert')
@@ -184,19 +121,25 @@ const router = useRouter()
 const route = useRoute()
 
 // Estado reactivo
+const fileId = ref(getDecodeId(route.params.file_id))
 const itemId = ref(getDecodeId(route.params.id))
 const isLoading = ref(true)
 const item = ref(null)
 const regDialog = ref(false)
-const credentialDialog = ref(false)
-const credentialImage = ref(null)
 
 // Obtener registro
 const getItem = async () => {
   isLoading.value = true
   try {
-    const endpoint = `${URL_API}/${routeName}/${itemId.value}`
-    const response = await axios.get(endpoint, getHdrs(store.getAuth?.token))
+    const endpoint = `${URL_API}/users/${routeName}/${itemId.value}`
+    const response = await axios.get(endpoint, {
+      params: {
+        id: itemId.value,
+        user_assistance_files_id: fileId.value,
+      },
+      ...getHdrs(store.getAuth?.token),
+    })
+
     item.value = getRsp(response).data.item
   } catch (err) {
     alert?.show('red-darken-1', getErr(err))
@@ -212,7 +155,7 @@ const deleteItem = async () => {
 
   isLoading.value = true
   try {
-    const endpoint = `${URL_API}/${routeName}/${itemId.value}`
+    const endpoint = `${URL_API}/users/${routeName}/${itemId.value}`
     const response = getRsp(await axios.delete(endpoint, getHdrs(store.getAuth?.token)))
     alert?.show('red-darken-1', response.msg)
     router.push({ name: routeName })
@@ -230,42 +173,12 @@ const restoreItem = async () => {
 
   isLoading.value = true
   try {
-    const endpoint = `${URL_API}/${routeName}/restore`
+    const endpoint = `${URL_API}/system/${routeName}/restore`
     const response = getRsp(
       await axios.post(endpoint, { id: itemId.value }, getHdrs(store.getAuth?.token))
     )
     item.value = response.data.item
     alert?.show('success', response.msg)
-  } catch (err) {
-    alert?.show('red-darken-1', getErr(err))
-  } finally {
-    isLoading.value = false
-  }
-}
-
-const showCredential = async () => {
-  isLoading.value = true
-  try {
-    const endpoint = `${URL_API}/${routeName}/dni`
-    const response = await axios.post(
-      endpoint,
-      { user_id: itemId.value },
-      getHdrs(store.getAuth?.token)
-    )
-    const data = getRsp(response).data
-
-    if (data.img64) {
-      if (!data.img64.startsWith('data:image')) {
-        const mimeType = data.ext === '.jpg' ? 'image/jpeg' : 'image/png'
-        credentialImage.value = `data:${mimeType};base64,${data.img64}`
-      } else {
-        credentialImage.value = data.img64
-      }
-
-      credentialDialog.value = true
-    } else {
-      throw new Error('No se recibió una imagen válida')
-    }
   } catch (err) {
     alert?.show('red-darken-1', getErr(err))
   } finally {

@@ -72,7 +72,7 @@
                   <VisVal label="Nombre" :value="item.name" />
                 </v-col>
                 <v-col cols="12" md="3">
-                  <VisDoc label="Fotografía" :value="item.avatar_b64" img />
+                  <VisDoc label="Fotografía" :value="item.logo_b64" img />
                 </v-col>
               </v-row>
             </v-card-text>
@@ -154,7 +154,7 @@ const deleteItem = async () => {
 
   isLoading.value = true
   try {
-    const endpoint = `${URL_API}/system/${routeName}/${itemId.value}`
+    const endpoint = `${URL_API}/${routeName}/${itemId.value}`
     const response = getRsp(await axios.delete(endpoint, getHdrs(store.getAuth?.token)))
     alert?.show('red-darken-1', response.msg)
     router.push({ name: routeName })

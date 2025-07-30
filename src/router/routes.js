@@ -133,6 +133,93 @@ const routes = [
       middleware: Auth,
     },
   },
+  //user assistance file
+  {
+    path: '/asistencia/archivo',
+    name: 'assistance/file',
+    component: () => import('@/views/assistancesFile/List.vue'),
+    meta: {
+      title: 'Archivos de asistencias',
+      icon: 'mdi-file-account',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/asistencia/archivo/agregar',
+    name: 'assistance/file/store',
+    component: () => import('@/views/assistancesFile/Form.vue'),
+    meta: {
+      title: 'Archivo de asistencias | Agregar',
+      icon: 'mdi-file-account',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/asistencia/archivo/:id',
+    name: 'assistance/file/show',
+    component: () => import('@/views/assistancesFile/Show.vue'),
+    props: true,
+    meta: {
+      title: 'Archivo de asistencias',
+      icon: 'mdi-file-account',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/asistencia/archivo/:id/editar',
+    name: 'assistance/file/update',
+    component: () => import('@/views/assistancesFile/Form.vue'),
+    props: true,
+    meta: {
+      title: 'Archivo de asistencias | Editar',
+      icon: 'mdi-file-account',
+      middleware: Auth,
+    },
+  },
+  //user assistance
+  {
+    path: '/asistencia/:file_id',
+    name: 'assistance',
+    component: () => import('@/views/assistances/List.vue'),
+    props: true,
+    meta: {
+      title: 'Asistencias',
+      icon: 'mdi-account-group',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/asistencia/:file_id/agregar',
+    name: 'assistance/store',
+    component: () => import('@/views/assistances/Form.vue'),
+    meta: {
+      title: 'Asistencia | Agregar',
+      icon: 'mdi-account-group',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/asistencia/:file_id/:id',
+    name: 'assistance/show',
+    component: () => import('@/views/assistances/Show.vue'),
+    props: true,
+    meta: {
+      title: 'Asistencia',
+      icon: 'mdi-account-group',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/asistencia/:file_id/:id/editar',
+    name: 'assistance/update',
+    component: () => import('@/views/assistances/Form.vue'),
+    props: true,
+    meta: {
+      title: 'Asistencia | Editar',
+      icon: 'mdi-account-group',
+      middleware: Auth,
+    },
+  },
   //GENERAL
   {
     path: '/inicio',

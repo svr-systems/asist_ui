@@ -6,22 +6,16 @@
           <CardTitle :text="route.meta.title" :icon="route.meta.icon" />
         </v-col>
         <v-col cols="2" class="text-right">
-          <div class="d-flex justify-end" style="gap: 10px">
-            <v-btn icon variant="flat" size="x-small" color="warning" @click="downloadUsers">
-              <v-icon>mdi-list-box</v-icon>
-              <v-tooltip activator="parent" location="bottom">Listado de empleados</v-tooltip>
-            </v-btn>
-            <v-btn
-              icon
-              variant="flat"
-              size="x-small"
-              color="success"
-              :to="{ name: `${routeName}/store` }"
-            >
-              <v-icon>mdi-plus</v-icon>
-              <v-tooltip activator="parent" location="bottom">Agregar</v-tooltip>
-            </v-btn>
-          </div>
+          <v-btn
+            icon
+            variant="flat"
+            size="x-small"
+            color="success"
+            :to="{ name: `${routeName}/file/store` }"
+          >
+            <v-icon>mdi-plus</v-icon>
+            <v-tooltip activator="parent" location="bottom">Agregar</v-tooltip>
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-title>
@@ -108,7 +102,7 @@
                   variant="text"
                   size="x-small"
                   :color="item.active ? '' : 'error'"
-                  :to="{ name: `${routeName}/show`, params: { id: getEncodeId(item.id) } }"
+                  :to="{ name: `${routeName}/file/show`, params: { id: getEncodeId(item.id) } }"
                 >
                   <v-icon>mdi-eye</v-icon>
                   <v-tooltip activator="parent" location="left">Detalle</v-tooltip>
@@ -138,7 +132,7 @@ import { getEncodeId } from '@/utils/coders'
 import CardTitle from '@/components/CardTitle.vue'
 
 // Constantes fijas
-const routeName = 'users'
+const routeName = 'assistance'
 
 // Estado y referencias
 const alert = inject('alert')
@@ -163,7 +157,7 @@ const getItems = async () => {
   items.value = []
 
   try {
-    const endpoint = `${URL_API}/${routeName}?active=${active.value}&filter=${filter.value}`
+    const endpoint = `${URL_API}/users/${routeName}/file?active=${active.value}&filter=${filter.value}`
     const response = await axios.get(endpoint, getHdrs(store.getAuth?.token))
     items.value = getRsp(response).data.items
   } catch (err) {
@@ -173,52 +167,13 @@ const getItems = async () => {
   }
 }
 
-const downloadUsers = async () => {
-  isLoading.value = true
-  try {
-    const endpoint = `${URL_API}/${routeName}/file/json`
-    const response = await axios.get(endpoint, getHdrs(store.getAuth?.token))
-    const data = getRsp(response).data
-
-    if (typeof data === 'string') {
-      const byteCharacters = atob(data)
-      const byteNumbers = new Array(byteCharacters.length)
-
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i)
-      }
-
-      const byteArray = new Uint8Array(byteNumbers)
-      const blob = new Blob([byteArray], { type: 'application/octet-stream' })
-
-      const link = document.createElement('a')
-      link.href = URL.createObjectURL(blob)
-      link.download = `usuarios_${new Date().toISOString().slice(0, 10)}.svr`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-
-      alert?.show('success', 'Archivo descargado correctamente')
-    } else {
-      throw new Error('Formato de datos no válido')
-    }
-  } catch (err) {
-    alert?.show('red-darken-1', getErr(err) || 'Error al descargar el archivo')
-  } finally {
-    isLoading.value = false
-  }
-}
-
 // Inicializar
 onMounted(() => {
   headers.value = [
     { title: '#', key: 'key', filterable: false, sortable: false, width: 60 },
-    { title: 'Nombre', key: 'name' },
-    { title: 'E-mail', key: 'email' },
-    { title: 'Rol', key: 'role.name' },
+    { title: 'Archivo', key: 'assistance_file' },
     { title: 'ID', key: 'uiid' },
-    { title: 'Verif.', key: 'email_verified_at' },
-    { title: '', key: 'action', filterable: false, sortable: false, width: 60 },
+    { title: '', key: 'action', filterable: false, sortable: false, width: 100 },
   ]
 
   activeOptions.value = [
