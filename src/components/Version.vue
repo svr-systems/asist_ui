@@ -7,6 +7,7 @@
 </template>
 
 <script setup>
+// Constantes y funciones
 import { APP_VERSION } from '@/utils/config'
 import { getCurrentYear } from '@/utils/helpers'
 </script>

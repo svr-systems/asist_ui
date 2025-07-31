@@ -24,9 +24,9 @@ export const getHdrs = (token = null, useFormData = false) => {
  */
 export const getErr = (error) => {
   const msg = error?.response?.data?.msg || 'Error desconocido'
-  const details = error?.response?.data?.data || {}
+  const details = error?.response?.data?.data || null
 
-  if (import.meta.env.VITE_LOG_ERRORS === 'true') {
+  if (import.meta.env.VITE_LOG_ERRORS === 'true' && details) {
     console.error(details)
   }
 

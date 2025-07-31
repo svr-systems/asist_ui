@@ -7,14 +7,14 @@
 </template>
 
 <script setup>
+// Estado reactivo
 import { ref } from 'vue'
 
-// Estado reactivo
 const visible = ref(false)
 const color = ref(null)
 const msg = ref(null)
 
-// Método expuesto para mostrar alerta
+// Método expuesto
 const show = (newColor, newMsg) => {
   color.value = newColor
   msg.value = newMsg

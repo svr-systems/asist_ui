@@ -5,18 +5,16 @@
         <v-card-text class="text-center">
           <v-row dense>
             <v-col cols="12" class="text-left" style="height: 40px" />
-
             <v-col cols="12" class="pb-6">
               <Logo width="60%" />
             </v-col>
-
             <v-col cols="12">
-              <v-form ref="formRef" @submit.prevent="handleAction">
+              <v-form ref="formRef" @submit.prevent="loginAction">
                 <v-row dense>
                   <v-col cols="12" class="text-left">
                     <v-text-field
-                      label="E-mail"
                       v-model="item.email"
+                      label="E-mail"
                       type="email"
                       variant="outlined"
                       density="compact"
@@ -29,8 +27,8 @@
                   </v-col>
                   <v-col cols="12" class="text-left">
                     <InpPassword
-                      label="Contraseña"
                       v-model="item.password"
+                      label="Contraseña"
                       counter
                       :rules="rules.required"
                       autocomplete="current-password"
@@ -45,7 +43,6 @@
                 </v-row>
               </v-form>
             </v-col>
-
             <v-col cols="12" class="pt-4">
               <v-btn
                 variant="text"
@@ -55,11 +52,9 @@
                 ¿Olvidaste tu contraseña?
               </v-btn>
             </v-col>
-
             <v-col cols="12" class="pt-8">
               <BtnTheme />
             </v-col>
-
             <v-col cols="12" class="pt-2">
               <Version />
             </v-col>
@@ -71,17 +66,17 @@
 </template>
 
 <script setup>
-// Importaciones de librerías externas
-import { ref, inject, onMounted } from 'vue'
+// Librerías
+import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 
-// Importaciones internas del proyecto
+// Estado global y utilidades
 import { useStore } from '@/store'
 import { URL_API } from '@/utils/config'
 import { getHdrs, getErr, getRsp } from '@/utils/http'
-import { getRules } from '@/utils/validators'
 import { getObj } from '@/utils/helpers'
+import { getRules } from '@/utils/validators'
 
 // Componentes
 import Logo from '@/components/Logo.vue'
@@ -89,12 +84,11 @@ import InpPassword from '@/components/InpPassword.vue'
 import BtnTheme from '@/components/BtnTheme.vue'
 import Version from '@/components/Version.vue'
 
-// Estado y referencias
+// Estado
 const alert = inject('alert')
-const store = useStore()
 const router = useRouter()
+const store = useStore()
 
-// Estado reactivo
 const isLoading = ref(false)
 const formRef = ref(null)
 const item = ref({
@@ -103,8 +97,8 @@ const item = ref({
 })
 const rules = getRules()
 
-// Función de envío del formulario de login
-const handleAction = async () => {
+// Funciones
+const loginAction = async () => {
   const { valid } = await formRef.value.validate()
   if (!valid) return
 

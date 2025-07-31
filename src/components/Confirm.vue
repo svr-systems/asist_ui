@@ -35,14 +35,14 @@
 </template>
 
 <script setup>
+// Estado reactivo
 import { ref } from 'vue'
 
-// Estado reactivo
 const visible = ref(false)
 const message = ref('')
 const resolve = ref(null)
 
-// Método expuesto para mostrar dialog
+// Método expuesto
 const show = (msg) => {
   message.value = msg
   visible.value = true

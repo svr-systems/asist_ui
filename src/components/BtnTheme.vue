@@ -7,21 +7,19 @@
 </template>
 
 <script setup>
-// Importaciones de librerías
+// Estado global
 import { ref, watch, computed } from 'vue'
 import { useTheme } from 'vuetify'
-
-// Importaciones internas
 import { useStore } from '@/store'
 
-const theme = useTheme()
 const store = useStore()
+const theme = useTheme()
 
 // Computados y estado local
 const isDark = computed(() => store.conf.theme_dark)
 const darkMode = ref(isDark.value)
 
-// Watchers
+// Sincronización entre toggle y estado global
 watch(darkMode, (val) => {
   store.themeDarkAction()
   theme.global.name.value = val ? 'dark' : 'light'

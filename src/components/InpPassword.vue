@@ -1,43 +1,44 @@
 <template>
   <v-text-field
     :label="label"
-    @update:model-value="emitValue"
     :model-value="modelValue"
+    @update:model-value="emitValue"
     :type="isVisible ? 'text' : 'password'"
-    variant="outlined"
-    density="compact"
-    :prepend-inner-icon="prepend"
-    :append-inner-icon="isVisible ? 'mdi-eye-off' : 'mdi-eye'"
-    maxlength="20"
     :rules="rules"
     :counter="counter"
     :disabled="disabled"
+    :prepend-inner-icon="prepend"
+    :append-inner-icon="isVisible ? 'mdi-eye-off' : 'mdi-eye'"
     @click:append-inner="toggleVisibility"
+    variant="outlined"
+    density="compact"
+    maxlength="20"
     autocomplete="current-password"
     hide-details="auto"
   />
 </template>
 
 <script setup>
-// Importaciones
+// Estado interno
 import { ref } from 'vue'
 
-// Definición de props y eventos
+// Props
 const props = defineProps({
-  modelValue: String,
   label: String,
+  modelValue: String,
   rules: Array,
   counter: Boolean,
   disabled: Boolean,
   prepend: String,
 })
 
+// Eventos
 const emit = defineEmits(['update:modelValue'])
 
-// Estado interno
+// Estado
 const isVisible = ref(false)
 
-// Funciones
+// Métodos
 const toggleVisibility = () => {
   isVisible.value = !isVisible.value
 }

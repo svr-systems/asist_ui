@@ -2,7 +2,7 @@
 export const APP_NAME = 'Template'
 
 // Versión actual de la aplicación
-export const APP_VERSION = '1.25.0713'
+export const APP_VERSION = '1.25.0731'
 
 // URL base del backend
 const BASE_URL = 'http://asistencia.svr.com.mx'

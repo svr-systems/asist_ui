@@ -8,7 +8,7 @@
   >
     <v-list nav>
       <v-list-item
-        v-for="(item, i) in drawerItems"
+        v-for="(item, i) in menuItems"
         :key="i"
         :title="item.title"
         :prepend-icon="item.icon"
@@ -19,27 +19,20 @@
 </template>
 
 <script setup>
-// Props y emits
+// Importaciones
 import { computed } from 'vue'
+import { menuItems } from '@/utils/menu'
 
+// Props y eventos
 const props = defineProps({
   modelValue: Boolean,
   isMobile: Boolean,
 })
-
 const emit = defineEmits(['update:modelValue'])
 
-// Modelo para v-model
+// Estado computado
 const drawerModel = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val),
 })
-
-// Ítems del menú
-const drawerItems = [
-  { title: 'Inicio', icon: 'mdi-home', link: 'home' },
-  { title: 'Empresas', icon: 'mdi-domain', link: 'company' },
-  { title: 'Usuarios', icon: 'mdi-account', link: 'users' },
-  { title: 'Asistencias', icon: 'mdi-file-account', link: 'assistance/file' },
-]
 </script>
