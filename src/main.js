@@ -22,10 +22,10 @@ pinia.use(piniaPluginPersistedstate)
 const app = createApp(App)
 app.use(pinia)
 
-// Obtener configuración desde el store (después de usar Pinia)
+// Acceder al store después de registrar Pinia
 const store = useStore()
 
-// Crear instancia de Vuetify
+// Crear instancia de Vuetify con configuración dinámica
 const vuetify = createVuetify({
   components: await import('vuetify/components'),
   directives: await import('vuetify/directives'),
@@ -39,8 +39,7 @@ const vuetify = createVuetify({
   },
 })
 
-// Configuración y montaje final
-app.config.productionTip = false
+// Montar la aplicación
 app.use(vuetify)
 app.use(router)
 app.mount('#app')

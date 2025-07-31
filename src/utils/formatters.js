@@ -1,9 +1,9 @@
 /**
- * Genera una cadena de fecha y hora actual con separadores personalizados.
- * @param {string} dateSep - Separador entre año, mes y día (por defecto: '-')
- * @param {string} dateTimeSep - Separador entre fecha y hora (por defecto: ' ')
- * @param {string} timeSep - Separador entre horas, minutos y segundos (por defecto: ':')
- * @returns {string} Fecha y hora en formato YYYY-MM-DD HH:MM:SS (según separadores)
+ * Retorna la fecha y hora actual con separadores personalizados.
+ * @param {string} dateSep - Separador entre año, mes y día (por defecto: '-').
+ * @param {string} dateTimeSep - Separador entre fecha y hora (por defecto: ' ').
+ * @param {string} timeSep - Separador entre horas, minutos y segundos (por defecto: ':').
+ * @returns {string} Fecha y hora en formato YYYY-MM-DD HH:MM:SS.
  */
 export const getDateTime = (dateSep = '-', dateTimeSep = ' ', timeSep = ':') => {
   const now = new Date()
@@ -16,25 +16,23 @@ export const getDateTime = (dateSep = '-', dateTimeSep = ' ', timeSep = ':') => 
   const minutes = String(now.getMinutes()).padStart(2, '0')
   const seconds = String(now.getSeconds()).padStart(2, '0')
 
-  const datePart = [year, month, day].join(dateSep)
-  const timePart = [hours, minutes, seconds].join(timeSep)
+  const date = [year, month, day].join(dateSep)
+  const time = [hours, minutes, seconds].join(timeSep)
 
-  return `${datePart}${dateTimeSep}${timePart}`
+  return `${date}${dateTimeSep}${time}`
 }
 
 /**
- * Formatea un valor numérico como monto en USD con dos decimales.
- * Si el valor es nulo o vacío, retorna -.
- *
- * @param {number|string|null} value - Valor numérico a formatear
- * @returns {string} Monto formateado como moneda en USD (ej: $1,234.56)
+ * Formatea un número como monto en USD con dos decimales.
+ * Retorna '-' si el valor no es válido.
+ * @param {number|string|null} value - Valor a formatear.
+ * @returns {string} Monto formateado o '-'.
  */
 export const getAmountFormat = (value) => {
-  const numeric = parseFloat(value)
+  if (value === null || value === '') return '-'
 
-  if (isNaN(numeric)) {
-    return '-'
-  }
+  const numeric = parseFloat(value)
+  if (isNaN(numeric)) return '-'
 
   return numeric.toLocaleString('en-US', {
     style: 'currency',
@@ -45,18 +43,16 @@ export const getAmountFormat = (value) => {
 }
 
 /**
- * Formatea un valor numérico como porcentaje.
- * Si el valor es nulo o vacío, retorna -.
- *
- * @param {number|string|null} value - Valor numérico a formatear como porcentaje
- * @returns {string} Porcentaje formateado (ej: '25%') o '-' si no es válido
+ * Formatea un número como porcentaje.
+ * Retorna '-' si el valor no es válido.
+ * @param {number|string|null} value - Valor a formatear.
+ * @returns {string} Porcentaje formateado o '-'.
  */
 export const getPercentFormat = (value) => {
-  const numeric = parseFloat(value)
+  if (value === null || value === '') return '-'
 
-  if (isNaN(numeric)) {
-    return '-'
-  }
+  const numeric = parseFloat(value)
+  if (isNaN(numeric)) return '-'
 
   return `${numeric}%`
 }

@@ -1,6 +1,6 @@
 /**
  * Devuelve el año actual.
- * @returns {number} Año actual en formato YYYY
+ * @returns {number} Año en formato YYYY.
  */
 export const getCurrentYear = () => {
   return new Date().getFullYear()
@@ -8,9 +8,9 @@ export const getCurrentYear = () => {
 
 /**
  * Retorna un objeto clonado y, si es modo edición, agrega _method: PATCH.
- * @param {Object} data - Datos originales del formulario.
- * @param {boolean} isStoreMode - Indica si es un nuevo registro (true) o edición (false).
- * @returns {Object} Objeto con los datos y, si aplica, la bandera _method.
+ * @param {Object} data - Datos del formulario.
+ * @param {boolean} isStoreMode - Indica si es nuevo registro (true) o edición (false).
+ * @returns {Object} Objeto modificado.
  */
 export const getObj = (data, isStoreMode = false) => {
   const obj = { ...data }
@@ -19,66 +19,54 @@ export const getObj = (data, isStoreMode = false) => {
 }
 
 /**
- * Convierte un objeto plano en una instancia de FormData.
- * Serializa objetos excepto archivos. Reemplaza null/cadenas vacías por ''.
- * @param {Object} data - Objeto de entrada
- * @returns {FormData} Instancia de FormData construida
+ * Convierte un objeto plano en FormData, serializando objetos y limpiando nulos.
+ * @param {Object} data - Objeto de entrada.
+ * @returns {FormData} FormData generado.
  */
 export const getFormData = (data) => {
   const formData = new FormData()
 
   for (const key in data) {
     const value = data[key]
-    const isEmptyString = typeof value === 'string' && value.trim() === ''
-    const isPlainObject = typeof value === 'object' && !(value instanceof File) && value !== null
+    const isEmpty = typeof value === 'string' && value.trim() === ''
+    const isObject = typeof value === 'object' && !(value instanceof File) && value !== null
 
-    formData.append(
-      key,
-      value == null || isEmptyString ? '' : isPlainObject ? JSON.stringify(value) : value,
-    )
+    formData.append(key, value == null || isEmpty ? '' : isObject ? JSON.stringify(value) : value)
   }
 
   return formData
 }
 
 /**
- * Extrae una subpropiedad de un objeto anidado y la asigna como propiedad directa.
- *
- * @param {Object} target - Objeto principal que contiene la propiedad anidada.
- * @param {string} sourceKey - Nombre de la propiedad que contiene el objeto anidado.
- * @param {string} nestedKey - Clave que se desea extraer del objeto anidado.
- * @returns {Object} Objeto actualizado con la nueva propiedad directa.
+ * Extrae una subpropiedad anidada y la asigna como propiedad directa.
+ * @param {Object} target - Objeto principal.
+ * @param {string} sourceKey - Propiedad contenedora.
+ * @param {string} nestedKey - Clave a extraer.
+ * @returns {Object} Objeto actualizado.
  */
 export const extractNestedProp = (target, sourceKey, nestedKey) => {
-  if (
-    target &&
-    typeof target === 'object' &&
-    target[sourceKey] &&
-    typeof target[sourceKey] === 'object'
-  ) {
-    target[`${sourceKey}_${nestedKey}`] = target[sourceKey][nestedKey]
+  const nested = target?.[sourceKey]
+  if (nested && typeof nested === 'object') {
+    target[`${sourceKey}_${nestedKey}`] = nested[nestedKey]
   }
-
   return target
 }
 
 /**
- * Extrae una clave específica de cada objeto dentro de un arreglo anidado
- * y la asigna como propiedades planas en el objeto principal.
- *
- * @param {Object} target - Objeto principal que contiene el arreglo anidado.
- * @param {string} arrayKey - Nombre de la propiedad que contiene el arreglo de objetos.
- * @param {string} nestedKey - Clave que se desea extraer de cada objeto del arreglo.
- * @returns {Object} Objeto actualizado con las nuevas propiedades planas.
+ * Extrae una clave de cada objeto en un arreglo anidado y las asigna planas.
+ * @param {Object} target - Objeto principal.
+ * @param {string} arrayKey - Propiedad que contiene el arreglo.
+ * @param {string} nestedKey - Clave a extraer.
+ * @returns {Object} Objeto actualizado.
  */
 export const extractMultipleNestedProps = (target, arrayKey, nestedKey) => {
-  if (target && Array.isArray(target[arrayKey])) {
-    target[arrayKey].forEach((item, index) => {
-      if (item && item[nestedKey] !== undefined) {
+  const array = target?.[arrayKey]
+  if (Array.isArray(array)) {
+    array.forEach((item, index) => {
+      if (item?.[nestedKey] !== undefined) {
         target[`${arrayKey}_${nestedKey}_${index}`] = item[nestedKey]
       }
     })
   }
-
   return target
 }

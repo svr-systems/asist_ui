@@ -1,7 +1,7 @@
 /**
  * Codifica un ID en base64.
  * @param {string|number} id - Identificador a codificar.
- * @returns {string} ID codificado en base64.
+ * @returns {string} ID codificado.
  */
 export const getEncodeId = (id) => {
   return window.btoa(String(id))
@@ -10,31 +10,42 @@ export const getEncodeId = (id) => {
 /**
  * Decodifica un ID desde base64.
  * @param {string} encodedId - Identificador codificado.
- * @returns {string} ID original decodificado.
+ * @returns {string|null} ID decodificado o null si falla.
  */
 export const getDecodeId = (encodedId) => {
-  return window.atob(encodedId)
+  try {
+    return window.atob(encodedId)
+  } catch (error) {
+    return null
+  }
 }
 
 /**
- * Convierte una cadena base64 en un objeto Blob.
- * Útil para visualizar o descargar archivos (PDFs, imágenes, etc.)
- *
- * @param {string} base64 - Contenido codificado en base64.
- * @param {string} ext - Extensión del archivo (ej. 'pdf', 'jpg', 'png').
- * @returns {Blob} Objeto Blob generado con el tipo MIME correspondiente.
+ * Obtiene un objeto Blob desde base64.
+ * @param {string} base64 - Contenido codificado.
+ * @param {string} ext - Extensión del archivo (pdf, jpg, png...).
+ * @returns {Blob} Blob del contenido con su tipo MIME.
  */
 export const getBlob = (base64, ext) => {
-  const cleanedBase64 = base64.replace(/\s/g, '')
-  const binary = atob(cleanedBase64)
-  const byteLength = binary.length
-  const byteArray = new Uint8Array(byteLength)
-
-  for (let index = 0; index < byteLength; index++) {
-    byteArray[index] = binary.charCodeAt(index)
+  const mimeMap = {
+    pdf: 'application/pdf',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    gif: 'image/gif',
+    txt: 'text/plain',
+    csv: 'text/csv',
   }
 
-  const mimeType = `application/${ext}`
+  const cleanedBase64 = base64.replace(/\s/g, '')
+  const binary = atob(cleanedBase64)
+  const byteArray = new Uint8Array(binary.length)
 
-  return new Blob([byteArray], { type: mimeType })
+  for (let i = 0; i < binary.length; i++) {
+    byteArray[i] = binary.charCodeAt(i)
+  }
+
+  const type = mimeMap[ext.toLowerCase()] || `application/${ext}`
+
+  return new Blob([byteArray], { type })
 }

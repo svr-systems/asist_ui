@@ -13,23 +13,25 @@
 </template>
 
 <script setup>
-// Importaciones de librerías
+// Importaciones de Vue
 import { ref, computed, getCurrentInstance, provide } from 'vue'
 
-// Importaciones internas del proyecto
+// Store principal
 import { useStore } from '@/store'
+
+// Componentes globales
 import Alert from '@/components/Alert.vue'
 import Confirm from '@/components/Confirm.vue'
 import NavBar from '@/components/NavBar.vue'
 
-// Estado y referencias
+// Instancias y estado
 const store = useStore()
 const alert = ref(null)
 const confirm = ref(null)
 const auth = computed(() => store.getAuth)
 const app = getCurrentInstance()?.appContext.app
 
-// Proveedores globales
+// Inyección de métodos globales
 provide('alert', {
   show: (color, msg) => alert.value?.show(color, msg),
 })

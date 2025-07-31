@@ -1,139 +1,9 @@
+// Importación de middlewares
 import Auth from './middleware/Auth'
 import Public from './middleware/Public'
 
 const routes = [
-  //USR SYSTEM
-  //users
-  {
-    path: '/usuarios',
-    name: 'users',
-    component: () => import('@/views/users/List.vue'),
-    meta: {
-      title: 'Usuarios',
-      icon: 'mdi-account',
-      middleware: Auth,
-    },
-  },
-  {
-    path: '/usuarios/agregar',
-    name: 'users/store',
-    component: () => import('@/views/users/Form.vue'),
-    meta: {
-      title: 'Usuario | Agregar',
-      icon: 'mdi-account',
-      middleware: Auth,
-    },
-  },
-  {
-    path: '/usuarios/:id',
-    name: 'users/show',
-    component: () => import('@/views/users/Show.vue'),
-    props: true,
-    meta: {
-      title: 'Usuario',
-      icon: 'mdi-account',
-      middleware: Auth,
-    },
-  },
-  {
-    path: '/usuarios/:id/editar',
-    name: 'users/update',
-    component: () => import('@/views/users/Form.vue'),
-    props: true,
-    meta: {
-      title: 'Usuario | Editar',
-      icon: 'mdi-account',
-      middleware: Auth,
-    },
-  },
-  //companies
-  {
-    path: '/empresas',
-    name: 'company',
-    component: () => import('@/views/companies/List.vue'),
-    meta: {
-      title: 'Empresas',
-      icon: 'mdi-domain',
-      middleware: Auth,
-    },
-  },
-  {
-    path: '/empresas/agregar',
-    name: 'company/store',
-    component: () => import('@/views/companies/Form.vue'),
-    meta: {
-      title: 'Empresa | Agregar',
-      icon: 'mdi-domain',
-      middleware: Auth,
-    },
-  },
-  {
-    path: '/empresas/:id',
-    name: 'company/show',
-    component: () => import('@/views/companies/Show.vue'),
-    props: true,
-    meta: {
-      title: 'Empresa',
-      icon: 'mdi-domain',
-      middleware: Auth,
-    },
-  },
-  {
-    path: '/empresas/:id/editar',
-    name: 'company/update',
-    component: () => import('@/views/companies/Form.vue'),
-    props: true,
-    meta: {
-      title: 'Empresa | Editar',
-      icon: 'mdi-domain',
-      middleware: Auth,
-    },
-  },
-  //branches
-  {
-    path: '/empresas/:company_id/sucursales',
-    name: 'branch',
-    component: () => import('@/views/branches/List.vue'),
-    props: true,
-    meta: {
-      title: 'Sucursales',
-      icon: 'mdi-bank',
-      middleware: Auth,
-    },
-  },
-  {
-    path: '/empresas/:company_id/sucursales/agregar',
-    name: 'branch/store',
-    component: () => import('@/views/branches/Form.vue'),
-    meta: {
-      title: 'Sucursal | Agregar',
-      icon: 'mdi-bank',
-      middleware: Auth,
-    },
-  },
-  {
-    path: '/empresas/:company_id/sucursales/:id',
-    name: 'branch/show',
-    component: () => import('@/views/branches/Show.vue'),
-    props: true,
-    meta: {
-      title: 'Sucursal',
-      icon: 'mdi-bank',
-      middleware: Auth,
-    },
-  },
-  {
-    path: '/empresas/:company_id/sucursales/:id/editar',
-    name: 'branch/update',
-    component: () => import('@/views/branches/Form.vue'),
-    props: true,
-    meta: {
-      title: 'Sucursal | Editar',
-      icon: 'mdi-bank',
-      middleware: Auth,
-    },
-  },
-  //user assistance file
+  // Assistance File
   {
     path: '/asistencia/archivo',
     name: 'assistance/file',
@@ -176,7 +46,8 @@ const routes = [
       middleware: Auth,
     },
   },
-  //user assistance
+
+  // Assistance
   {
     path: '/asistencia/:file_id',
     name: 'assistance',
@@ -220,7 +91,141 @@ const routes = [
       middleware: Auth,
     },
   },
-  //GENERAL
+
+  // users
+  {
+    path: '/usuarios',
+    name: 'users',
+    component: () => import('@/views/users/List.vue'),
+    meta: {
+      title: 'Usuarios',
+      icon: 'mdi-account',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/usuarios/agregar',
+    name: 'users/store',
+    component: () => import('@/views/users/Form.vue'),
+    meta: {
+      title: 'Usuario | Agregar',
+      icon: 'mdi-account',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/usuarios/:id',
+    name: 'users/show',
+    component: () => import('@/views/users/Show.vue'),
+    props: true,
+    meta: {
+      title: 'Usuario',
+      icon: 'mdi-account',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/usuarios/:id/editar',
+    name: 'users/update',
+    component: () => import('@/views/users/Form.vue'),
+    props: true,
+    meta: {
+      title: 'Usuario | Editar',
+      icon: 'mdi-account',
+      middleware: Auth,
+    },
+  },
+
+  // branches
+  {
+    path: '/empresas/:company_id/sucursales',
+    name: 'branch',
+    component: () => import('@/views/branches/List.vue'),
+    props: true,
+    meta: {
+      title: 'Sucursales',
+      icon: 'mdi-bank',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/empresas/:company_id/sucursales/agregar',
+    name: 'branch/store',
+    component: () => import('@/views/branches/Form.vue'),
+    meta: {
+      title: 'Sucursal | Agregar',
+      icon: 'mdi-bank',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/empresas/:company_id/sucursales/:id',
+    name: 'branch/show',
+    component: () => import('@/views/branches/Show.vue'),
+    props: true,
+    meta: {
+      title: 'Sucursal',
+      icon: 'mdi-bank',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/empresas/:company_id/sucursales/:id/editar',
+    name: 'branch/update',
+    component: () => import('@/views/branches/Form.vue'),
+    props: true,
+    meta: {
+      title: 'Sucursal | Editar',
+      icon: 'mdi-bank',
+      middleware: Auth,
+    },
+  },
+
+  // companies
+  {
+    path: '/empresas',
+    name: 'company',
+    component: () => import('@/views/companies/List.vue'),
+    meta: {
+      title: 'Empresas',
+      icon: 'mdi-domain',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/empresas/agregar',
+    name: 'company/store',
+    component: () => import('@/views/companies/Form.vue'),
+    meta: {
+      title: 'Empresa | Agregar',
+      icon: 'mdi-domain',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/empresas/:id',
+    name: 'company/show',
+    component: () => import('@/views/companies/Show.vue'),
+    props: true,
+    meta: {
+      title: 'Empresa',
+      icon: 'mdi-domain',
+      middleware: Auth,
+    },
+  },
+  {
+    path: '/empresas/:id/editar',
+    name: 'company/update',
+    component: () => import('@/views/companies/Form.vue'),
+    props: true,
+    meta: {
+      title: 'Empresa | Editar',
+      icon: 'mdi-domain',
+      middleware: Auth,
+    },
+  },
+
+  // General
   {
     path: '/inicio',
     name: 'home',
@@ -239,7 +244,8 @@ const routes = [
       middleware: Auth,
     },
   },
-  //PUBLIC
+
+  // Public
   {
     path: '/iniciar_sesion',
     name: 'login',
@@ -288,7 +294,8 @@ const routes = [
       middleware: Public,
     },
   },
-  //NOT FOUND
+
+  // Not Found
   {
     path: '/:pathMatch(.*)*',
     name: 'not_found',

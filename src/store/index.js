@@ -8,6 +8,13 @@ export const useStore = defineStore('auth', {
     },
   }),
 
+  getters: {
+    getAuth: (state) => state.auth,
+    getConf: (state) => state.conf,
+    getUser: (state) => state.auth?.user || null,
+    isAdmin: (state) => state.auth?.user?.role_id === 1,
+  },
+
   actions: {
     loginAction(auth) {
       this.auth = auth
@@ -18,18 +25,11 @@ export const useStore = defineStore('auth', {
     themeDarkAction() {
       this.conf.theme_dark = !this.conf.theme_dark
     },
-    profileAction(item) {
+    profileAction(user) {
       if (this.auth) {
-        this.auth.user = item
+        this.auth.user = user
       }
     },
-  },
-
-  getters: {
-    getAuth: (state) => state.auth,
-    getConf: (state) => state.conf,
-    getUser: (state) => state.auth?.user || null,
-    isAdmin: (state) => state.auth?.user?.role_id === 1,
   },
 
   persist: true,

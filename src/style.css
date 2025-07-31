@@ -1,9 +1,14 @@
+/* Tema oscuro - fondo global */
 .v-theme--dark.v-application {
   background: #1e1e1e !important;
 }
+
+/* Alineación vertical para íconos */
 .v-icon {
   vertical-align: baseline !important;
 }
+
+/* Texto con saltos de línea respetados */
 .text-description {
   white-space: pre-line;
 }
