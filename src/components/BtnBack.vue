@@ -6,7 +6,11 @@
 </template>
 
 <script setup>
+// Props
 defineProps({
-  route: Object,
+  route: {
+    type: Object,
+    required: true,
+  },
 })
 </script>

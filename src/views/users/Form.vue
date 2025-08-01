@@ -2,7 +2,7 @@
   <v-card elevation="24" :disabled="isLoading" :loading="isLoading">
     <v-card-title>
       <v-row dense>
-        <v-col cols="10">
+        <v-col cols="12">
           <BtnBack
             :route="{
               name: routeName + (!isStoreMode ? '/show' : ''),
@@ -10,7 +10,6 @@
           />
           <CardTitle :text="$route.meta.title" :icon="$route.meta.icon" />
         </v-col>
-        <v-col cols="2" class="text-right" />
       </v-row>
     </v-card-title>
 
@@ -21,13 +20,12 @@
             <v-card>
               <v-card-title>
                 <v-row dense>
-                  <v-col cols="11">
+                  <v-col cols="12">
                     <CardTitle
                       :text="`GENERAL${isStoreMode ? '' : ' | ' + (item.uiid || '')}`"
                       sub
                     />
                   </v-col>
-                  <v-col cols="1" class="text-right" />
                 </v-row>
               </v-card-title>
               <v-card-text>
@@ -98,7 +96,7 @@
                       :color="item.avatar_dlt ? 'error' : 'default'"
                       @click="item.avatar_dlt = !item.avatar_dlt"
                       class="ml-1"
-                      style="margin-top: -20px;"
+                      style="margin-top: -20px"
                     >
                       <v-icon size="small">
                         {{ item.avatar_dlt ? 'mdi-close-circle' : 'mdi-delete' }}
@@ -117,10 +115,9 @@
             <v-card>
               <v-card-title>
                 <v-row dense>
-                  <v-col cols="11">
+                  <v-col cols="12">
                     <CardTitle text="CUENTA" sub />
                   </v-col>
-                  <v-col cols="1" class="text-right" />
                 </v-row>
               </v-card-title>
               <v-card-text>
@@ -177,38 +174,35 @@
 </template>
 
 <script setup>
-// Importaciones de librerías externas
+// Importaciones externas
 import { ref, inject, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 
-// Importaciones internas del proyecto
+// Importaciones internas
 import { useStore } from '@/store'
 import { URL_API } from '@/utils/config'
 import { getHdrs, getErr, getRsp } from '@/utils/http'
-import { getDecodeId } from '@/utils/coders'
+import { getDecodeId, getEncodeId } from '@/utils/coders'
 import { getRules } from '@/utils/validators'
 import { getObj, getFormData } from '@/utils/helpers'
 import { getUserObj } from '@/utils/objects'
-
-// Componentes
 import BtnBack from '@/components/BtnBack.vue'
 import CardTitle from '@/components/CardTitle.vue'
 import BtnDwd from '@/components/BtnDwd.vue'
 
-// Constantes fijas
+// Constantes
 const routeName = 'users'
 
-// Estado y referencias
+// Estado
 const alert = inject('alert')
 const confirm = inject('confirm')
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
-// Estado reactivo
 const itemId = ref(route.params.id ? getDecodeId(route.params.id) : null)
-const isStoreMode = ref(!itemId.value)
+const isStoreMode = ref(itemId.value === null)
 const isLoading = ref(true)
 const formRef = ref(null)
 const item = ref(null)
@@ -232,7 +226,7 @@ const getCatalogs = async () => {
   }
 }
 
-// Obtener datos
+// Obtener registro
 const getItem = async () => {
   if (isStoreMode.value) {
     item.value = getUserObj()
@@ -277,7 +271,7 @@ const handleAction = async () => {
     router.push({
       name: `${routeName}/show`,
       params: {
-        id: btoa(isStoreMode.value ? response.data.item.id : itemId.value),
+        id: getEncodeId(isStoreMode.value ? response.data.item.id : itemId.value),
       },
     })
   } catch (err) {
@@ -287,7 +281,7 @@ const handleAction = async () => {
   }
 }
 
-// Inicialización
+// Cargar datos al montar
 onMounted(() => {
   getCatalogs()
   getItem()

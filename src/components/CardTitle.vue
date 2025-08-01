@@ -6,9 +6,13 @@
 </template>
 
 <script setup>
+// Props
 defineProps({
-  sub: Boolean,
-  text: String,
+  text: {
+    type: String,
+    required: true,
+  },
   icon: String,
+  sub: Boolean,
 })
 </script>

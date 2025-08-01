@@ -13,11 +13,11 @@
               icon
               variant="flat"
               size="x-small"
-              color="success"
+              color="info"
               @click="showCredential"
             >
               <v-icon>mdi-card-account-details</v-icon>
-              <v-tooltip activator="parent" location="left">Credencial</v-tooltip>
+              <v-tooltip activator="parent" location="bottom">Ver credencial</v-tooltip>
             </v-btn>
             <v-btn
               v-if="item.active"
@@ -28,7 +28,7 @@
               :to="{ name: `${routeName}/update`, params: { id: getEncodeId(itemId) } }"
             >
               <v-icon>mdi-pencil</v-icon>
-              <v-tooltip activator="parent" location="left">Editar</v-tooltip>
+              <v-tooltip activator="parent" location="bottom">Editar</v-tooltip>
             </v-btn>
           </div>
         </v-col>
@@ -38,20 +38,14 @@
     <v-card-text v-if="item">
       <v-row>
         <v-col v-if="!item.active" cols="12">
-          <v-alert type="error" density="compact" class="rounded">
+          <v-alert color="red-darken-3" variant="outlined" density="compact">
             <v-row dense>
-              <v-col class="grow pt-2">El registro se encuentra inactivo</v-col>
+              <v-col class="grow pt-2">
+                <v-icon start class="mr-1" size="x-small">mdi-alert</v-icon>
+                Registro inactivo
+              </v-col>
               <v-col v-if="store.getAuth?.user?.role_id === 1" class="shrink text-right">
-                <v-btn
-                  icon
-                  variant="flat"
-                  size="x-small"
-                  color="success"
-                  @click.prevent="restoreItem"
-                >
-                  <v-icon>mdi-delete-restore</v-icon>
-                  <v-tooltip activator="parent" location="left">Reactivar</v-tooltip>
-                </v-btn>
+                <v-btn size="x-small" color="success" @click.prevent="restoreItem"> Activar </v-btn>
               </v-col>
             </v-row>
           </v-alert>
@@ -62,7 +56,7 @@
             <v-card-title>
               <v-row dense>
                 <v-col cols="11">
-                  <CardTitle :text="'GENERAL | ' + item.uiid" sub />
+                  <CardTitle :text="`GENERAL | ${item.uiid}`" sub />
                 </v-col>
                 <v-col cols="1" class="text-right">
                   <v-btn
@@ -78,7 +72,6 @@
                 </v-col>
               </v-row>
             </v-card-title>
-
             <v-card-text>
               <v-row dense>
                 <v-col cols="12" md="3">
@@ -102,10 +95,9 @@
           <v-card>
             <v-card-title>
               <v-row dense>
-                <v-col cols="11">
+                <v-col cols="12">
                   <CardTitle text="CUENTA" sub />
                 </v-col>
-                <v-col cols="1" class="text-right" />
               </v-row>
             </v-card-title>
             <v-card-text>
@@ -121,12 +113,12 @@
           </v-card>
         </v-col>
 
-        <v-col v-if="item.active && store.getAuth?.user?.role_id === 1" cols="12">
+        <v-col v-if="item.active" cols="12">
           <v-btn
             icon
             variant="flat"
             size="x-small"
-            color="red-darken-1"
+            color="red-darken-3"
             @click.prevent="deleteItem"
           >
             <v-icon>mdi-minus-thick</v-icon>
@@ -137,58 +129,45 @@
     </v-card-text>
 
     <DlgReg v-model="regDialog" :item="item" />
+
+    <DlgCredential v-model="credentialDialog" :loading="credentialLoading" :img="credentialImage" />
   </v-card>
-  <v-dialog v-model="credentialDialog" max-width="500">
-    <v-card>
-      <v-card-title class="d-flex justify-end">
-        <v-btn icon @click="credentialDialog = false" variant="text" size="x-small">
-          <v-icon>mdi-close</v-icon>
-          <v-tooltip activator="parent" location="left">Cerrar</v-tooltip>
-        </v-btn>
-      </v-card-title>
-      <v-card-text>
-        <Credential :base64Image="credentialImage" :label="`CREDENCIAL`" />
-      </v-card-text>
-    </v-card>
-  </v-dialog>
 </template>
 
 <script setup>
-// Importaciones de librerías externas
+// Importaciones externas
 import { ref, inject, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 
-// Importaciones internas del proyecto
+// Importaciones internas
 import { useStore } from '@/store'
 import { URL_API } from '@/utils/config'
 import { getHdrs, getErr, getRsp } from '@/utils/http'
 import { getDecodeId, getEncodeId } from '@/utils/coders'
-
-// Componentes
 import BtnBack from '@/components/BtnBack.vue'
 import CardTitle from '@/components/CardTitle.vue'
 import DlgReg from '@/components/DlgReg.vue'
 import VisVal from '@/components/VisVal.vue'
 import VisDoc from '@/components/VisDoc.vue'
-import Credential from '@/components/Credentials.vue'
+import DlgCredential from '@/components/DlgCredential.vue'
 
-// Constantes fijas
+// Constantes
 const routeName = 'users'
 
-// Estado y referencias
+// Estado
 const alert = inject('alert')
 const confirm = inject('confirm')
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
-// Estado reactivo
 const itemId = ref(getDecodeId(route.params.id))
 const isLoading = ref(true)
 const item = ref(null)
 const regDialog = ref(false)
 const credentialDialog = ref(false)
+const credentialLoading = ref(false)
 const credentialImage = ref(null)
 
 // Obtener registro
@@ -214,7 +193,7 @@ const deleteItem = async () => {
   try {
     const endpoint = `${URL_API}/${routeName}/${itemId.value}`
     const response = getRsp(await axios.delete(endpoint, getHdrs(store.getAuth?.token)))
-    alert?.show('red-darken-1', response.msg)
+    alert?.show('red-darken-3', response.msg)
     router.push({ name: routeName })
   } catch (err) {
     alert?.show('red-darken-1', getErr(err))
@@ -243,8 +222,12 @@ const restoreItem = async () => {
   }
 }
 
+// Mostrar credencial
 const showCredential = async () => {
-  isLoading.value = true
+  credentialImage.value = null
+  credentialDialog.value = true
+  credentialLoading.value = true
+
   try {
     const endpoint = `${URL_API}/${routeName}/dni`
     const response = await axios.post(
@@ -254,27 +237,16 @@ const showCredential = async () => {
     )
     const data = getRsp(response).data
 
-    if (data.img64) {
-      if (!data.img64.startsWith('data:image')) {
-        const mimeType = data.ext === '.jpg' ? 'image/jpeg' : 'image/png'
-        credentialImage.value = `data:${mimeType};base64,${data.img64}`
-      } else {
-        credentialImage.value = data.img64
-      }
+    if (!data.img64) throw new Error('No se recibió una imagen válida')
 
-      credentialDialog.value = true
-    } else {
-      throw new Error('No se recibió una imagen válida')
-    }
+    credentialImage.value = data.img64
   } catch (err) {
     alert?.show('red-darken-1', getErr(err))
   } finally {
-    isLoading.value = false
+    credentialLoading.value = false
   }
 }
 
-// Inicializar
-onMounted(() => {
-  getItem()
-})
+// Cargar datos al montar
+onMounted(getItem)
 </script>

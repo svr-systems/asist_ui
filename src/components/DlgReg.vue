@@ -3,11 +3,11 @@
     <v-card flat>
       <v-card-title>
         <v-row dense>
-          <v-col cols="6">
+          <v-col cols="11">
             <CardTitle text="REGISTRO" icon="mdi-clock-outline" sub />
           </v-col>
-          <v-col cols="6" class="text-right">
-            <v-btn icon variant="text" size="x-small" @click.prevent="show = false">
+          <v-col cols="1" class="text-right">
+            <v-btn icon variant="text" size="x-small" @click="show = false">
               <v-icon>mdi-close</v-icon>
               <v-tooltip activator="parent" location="left">Cerrar</v-tooltip>
             </v-btn>
@@ -33,19 +33,21 @@
 </template>
 
 <script setup>
-// Importaciones de componentes
+// Importaciones
 import { computed } from 'vue'
 import CardTitle from '@/components/CardTitle.vue'
 import VisVal from '@/components/VisVal.vue'
 
-// Props y emits
+// Props
 const props = defineProps({
   modelValue: Boolean,
   item: Object,
 })
+
+// Emit
 const emit = defineEmits(['update:modelValue'])
 
-// Computado para el modelo
+// Modelo bidireccional
 const show = computed({
   get: () => props.modelValue,
   set: (v) => emit('update:modelValue', v),
